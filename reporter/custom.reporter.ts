@@ -431,7 +431,7 @@ export default class CustomReporter extends WDIOReporter {
     }
 
     createHtml() {
-        var content = readFileSync(join(__dirname,'custom_report.html'), 'utf8').toString();
+        var content = readFileSync(join(__dirname,'report.html'), 'utf8').toString();
         var obj = Object.fromEntries(jsonVar);
         var jsonString = JSON.stringify(obj);
         content = content.replace("var obj = '';", "var obj = " + jsonString + ";");
