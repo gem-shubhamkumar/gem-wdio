@@ -166,7 +166,7 @@ export const verifyEquals = async (actual: any, expected: any, description: stri
         addLog("Matching " + description + " - Actual - " + actual + " | Expected - " + expected)
         chaiExpect(actual).equal(expected)
     } catch (error) {
-
+        throw new Error("Fail to verify");
     }
 
 }
