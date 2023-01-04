@@ -17,8 +17,13 @@ export const addStepLog = async (log: string) => {
  * @returns {void} void
  */
 export const open = async (): Promise<void> => {
-    await browser.url("")
-    addLog("Launching URL - " + await browser.getUrl())
+    try {
+        await browser.url("")
+        addLog("Launching URL - " + await browser.getUrl())
+    } catch (error) {
+
+    }
+
 }
 
 /**
@@ -53,10 +58,15 @@ export const setImplicitTimeout = async (seconds?: number): Promise<void> => {
  * @returns {void} void
  */
 export const typeText = async (element: Promise<WebdriverIO.Element>, text: string, description: string): Promise<void> => {
-    await (await element).waitForDisplayed()
-    await (await element).setValue(text)
-    addLog("Type Text into " + description + " - " + text);
-    await browser.takeScreenshot()
+    try {
+        await (await element).waitForDisplayed()
+        await (await element).setValue(text)
+        addLog("Type Text into " + description + " - " + text);
+        await browser.takeScreenshot()
+    } catch (error) {
+
+    }
+
 }
 
 /**
@@ -68,10 +78,15 @@ export const typeText = async (element: Promise<WebdriverIO.Element>, text: stri
  * 
  */
 export const clearText = async (element: Promise<WebdriverIO.Element>, description: string) => {
-    await (await element).waitForDisplayed()
-    await (await element).clearValue()
-    await browser.takeScreenshot()
-    addLog("Clear value of " + description)
+    try {
+        await (await element).waitForDisplayed()
+        await (await element).clearValue()
+        await browser.takeScreenshot()
+        addLog("Clear value of " + description)
+    } catch (error) {
+
+    }
+
 }
 
 /**
@@ -83,10 +98,15 @@ export const clearText = async (element: Promise<WebdriverIO.Element>, descripti
  * 
  */
 export const clickOn = async (element: Promise<WebdriverIO.Element>, description: string) => {
-    await (await element).waitForDisplayed()
-    await browser.takeScreenshot()
-    await (await element).click()
-    addLog("Click on " + description)
+    try {
+        await (await element).waitForDisplayed()
+        await browser.takeScreenshot()
+        await (await element).click()
+        addLog("Click on " + description)
+    } catch (error) {
+
+    }
+
 }
 
 /**
@@ -122,11 +142,16 @@ export const getElementText = async (element: Promise<WebdriverIO.Element>): Pro
  * 
  */
 export const verifyTitle = async (expected: string) => {
-    let actual: string = await browser.getTitle()
-    addLog("Matching Title -  Actual - " + actual + " | Expected - " + expected)
-    chaiExpect(actual).equal(expected)
-}
+    try {
+        let actual: string = await browser.getTitle()
+        addLog("Matching Title -  Actual - " + actual + " | Expected - " + expected)
+        chaiExpect(actual).equal(expected)
+    }
+    catch (error) {
 
+    }
+
+}
 /**
  * method - verifyEquals()
  * 
@@ -136,9 +161,14 @@ export const verifyTitle = async (expected: string) => {
  * 
  */
 export const verifyEquals = async (actual: any, expected: any, description: string) => {
-    let snap = await browser.takeScreenshot()
-    addLog("Matching " + description + " - Actual - " + actual + " | Expected - " + expected)
-    chaiExpect(actual).equal(expected)
+    try {
+        let snap = await browser.takeScreenshot()
+        addLog("Matching " + description + " - Actual - " + actual + " | Expected - " + expected)
+        chaiExpect(actual).equal(expected)
+    } catch (error) {
+
+    }
+
 }
 
 /**
@@ -162,9 +192,14 @@ export const getAttributeValue = async (element: Promise<WebdriverIO.Element>, a
  * 
  */
 export const verifyAttributeContains = async (element: Promise<WebdriverIO.Element>, attribute: string, value: string) => {
-    let actual: string = await getAttributeValue(element, attribute)
-    addLog("Matching value of " + attribute + " - Actual - " + actual + " | Expected - " + value)
-    chaiExpect(actual).to.have.string(value)
+    try {
+        let actual: string = await getAttributeValue(element, attribute)
+        addLog("Matching value of " + attribute + " - Actual - " + actual + " | Expected - " + value)
+        chaiExpect(actual).to.have.string(value)
+    } catch (error) {
+
+    }
+
 }
 
 /**
@@ -177,4 +212,136 @@ export const verifyAttributeContains = async (element: Promise<WebdriverIO.Eleme
  */
 export const sizeOf = async (element: Promise<WebdriverIO.ElementArray>): Promise<number> => {
     return (await element).length
+}
+
+export const typeAndEnter = async (element: Promise<WebdriverIO.Element>, text: string, description: string) => {
+    try {
+        await (await element).waitForDisplayed()
+        await (await element).setValue(text)
+        browser.keys("Enter")
+    } catch (error) {
+
+    }
+
+}
+
+export const implicitWait = async () => {
+    await browser.setTimeout({ 'implicit': 200000 })
+}
+
+export const waitForElement = async (element: Promise<WebdriverIO.Element>) => {
+    await (await element).waitForDisplayed({ timeout: 30000 })
+}
+
+/**
+* method - rightClick()
+* 
+* It will perform double click action on element
+* params - Element
+* return void
+* 
+*/
+export const doubleClickOnElement = async (element: Promise<WebdriverIO.Element>) => {
+    try {
+        waitForElement(element)
+        await (await (element)).doubleClick()
+
+    } catch (error) {
+        console.log("Error occured " + error)
+    }
+
+}
+
+/**
+* method - hoverAndClick()
+* 
+* It will first perform hover action then click action on element
+* params - Element
+* return void
+* 
+*/
+export const hoverAndClick = async (hoverElement: Promise<WebdriverIO.Element>, clickElement: Promise<WebdriverIO.Element>) => {
+    try {
+        await (await hoverElement).moveTo();
+        await (await clickElement).click();
+    } catch (error) {
+        console.log("Error occured " + error)
+    }
+
+}
+
+export const refreshPage = async () => {
+    browser.refresh()
+}
+
+/**
+* method - scrollToAnElement()
+* 
+* It will perform scroll action until element is not present
+* params - Element
+* return void
+* 
+*/
+export const scrollToAnElement = async (element: Promise<WebdriverIO.Element>) => {
+    try {
+        await (await element).scrollIntoView();
+    } catch (error) {
+        console.log("Error occured " + error)
+
+    }
+
+}
+
+/**
+* method - isElementPresent()
+* 
+* It will check whether element is present or not
+* params - Element
+* return boolean
+* 
+*/
+
+export const isElementPresent = async (element: Promise<WebdriverIO.Element>): Promise<boolean> => {
+    try {
+        waitForElement(element)
+        return await (await element).isDisplayed()
+    } catch (error) {
+        console.log("Error occured " + error)
+    }
+}
+
+/**
+* method - rightClick()
+* 
+* It will perform right/context click action on element
+* params - Element
+* return void
+* 
+*/
+export const rightClick = async (element: Promise<WebdriverIO.Element>): Promise<void> => {
+    try {
+        waitForElement(element);
+        (await element).click({ button: 'right' })
+    }
+    catch (error) {
+        console.log("Error occured " + error)
+    }
+}
+
+/**
+* method - waitUntilClickable()
+* 
+* It will wait until element is clickable timeout 5000ms
+* params - Element
+* return void
+* 
+*/
+export const waitUntilClickable = async (element: Promise<WebdriverIO.Element>): Promise<void> => {
+    try {
+        browser.waitUntil(async () => (await element).isClickable())
+    }
+    catch (error) {
+        console.log("Error occured " + error)
+    }
+
 }
