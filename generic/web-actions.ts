@@ -12,16 +12,17 @@ export const addStepLog = async (log: string) => {
 
 
 /**
- * It will launch th browser with the default URL, that is given in wdio.conf.ts file.
+ * It will launch the browser with the given URL. By default it will launch with URL that is defined inside [`wdio.conf.ts`](../../wdio.conf.ts) file.
  * @method open()
+ * @param {string} baseUrl URL, that you want to provide for launching `Optional`.
  * @returns {void} void
  */
-export const open = async (): Promise<void> => {
+export const open = async (baseUrl?: string): Promise<void> => {
     try {
-        await browser.url("")
+        baseUrl === undefined ? await browser.url("") : await browser.url(baseUrl);
         addLog("Launching URL - " + await browser.getUrl())
     } catch (error) {
-
+        throw new Error("Fail to launch browser.");
     }
 
 }
@@ -32,13 +33,17 @@ export const open = async (): Promise<void> => {
  * @returns {void} void
  */
 export const maximizeWindow = async (): Promise<void> => {
-    await browser.maximizeWindow()
+    try {
+        await browser.maximizeWindow()
+    } catch (error) {
+        throw new Error("Fail to maxmize window.");
+    }
 }
 
 /**
  * It will set implicit timeout for given time, by default it will set for 10 seconds.
  * @method setImplicitTimeout()
- * @param {number} seconds Optional value, that you want to provide to wait.
+ * @param {number} seconds Time, that you want to provide to wait `Optional`.
  * @returns {void} void
  */
 export const setImplicitTimeout = async (seconds?: number): Promise<void> => {
@@ -50,177 +55,196 @@ export const setImplicitTimeout = async (seconds?: number): Promise<void> => {
 }
 
 /**
- * It will enter the text into input field.
+ * It will enter the value into the input field.
  * @method typeText()
- * @param {element} element On which action to be performed.
+ * @param {Element} element On which action to be performed.
  * @param {string} text Value to be entered.
- * @param {string} description Label for which value entered..
+ * @param {string} description Label for which value entered `Optional`.
  * @returns {void} void
  */
-export const typeText = async (element: Promise<WebdriverIO.Element>, text: string, description: string): Promise<void> => {
+export const typeText = async (element: Promise<WebdriverIO.Element>, text: string, description?: string): Promise<void> => {
     try {
         await (await element).waitForDisplayed()
         await (await element).setValue(text)
-        addLog("Type Text into " + description + " - " + text);
-        await browser.takeScreenshot()
+        if (description !== undefined) {
+            addLog("Type Text into " + description + " - " + text);
+        } else {
+            addLog("Type Text - " + text);
+        }
     } catch (error) {
-
+        throw new Error("Fail while entering value.");
     }
 
 }
 
 /**
- * method - clearText()
- * 
  * It will clear the text from input field.
- * params - Element, Description
- * return void
- * 
+ * @method clearText()
+ * @param {Element} element On which action to be performed.
+ * @param {string} description Label for which value cleared `Optional`.
+ * @returns {void} void
  */
-export const clearText = async (element: Promise<WebdriverIO.Element>, description: string) => {
+export const clearText = async (element: Promise<WebdriverIO.Element>, description?: string): Promise<void> => {
     try {
         await (await element).waitForDisplayed()
         await (await element).clearValue()
-        await browser.takeScreenshot()
-        addLog("Clear value of " + description)
+        if (description !== undefined) {
+            addLog("Clear text from " + description);
+        } else {
+            addLog("Text cleared");
+        }
     } catch (error) {
-
+        throw new Error("Fail while clearing text field.");
     }
 
 }
 
 /**
- * method - clickOn()
- * 
  * It will click on the given element.
- * params - Element, Description
- * return void
- * 
+ * @method clickOn()
+ * @param {Element} element On which action to be performed.
+ * @param {string} description Label for which clicked `Optional`.
+ * @returns {void} void
  */
-export const clickOn = async (element: Promise<WebdriverIO.Element>, description: string) => {
+export const clickOn = async (element: Promise<WebdriverIO.Element>, description?: string): Promise<void> => {
     try {
         await (await element).waitForDisplayed()
-        await browser.takeScreenshot()
         await (await element).click()
-        addLog("Click on " + description)
+        if (description !== undefined) {
+            addLog("Click on " + description);
+        } else {
+            addLog("Clicked");
+        }
     } catch (error) {
-
+        throw new Error("Fail while clicking.");
     }
 
 }
 
 /**
- * method - getTitle()
- * 
  * It will return the page title.
- * params - NA
- * return String
- * 
+ * @method getTitle()
+ * @returns {string} title of the web page
  */
 export const getTitle = async (): Promise<string> => {
-    return await browser.getTitle()
+    try {
+        return await browser.getTitle()
+    } catch (error) {
+        throw new Error("Fail to get title.");
+    }
 }
 
 /**
- * method - getElementText()
- * 
- * It will return the text of webElement.
- * params - Element
- * return String
- * 
+ * It will return the text of given element.
+ * @method getElementText()
+ * @param {Element} element On which action to be performed.
+ * @returns {string} text of the element
  */
 export const getElementText = async (element: Promise<WebdriverIO.Element>): Promise<string> => {
-    return await (await element).getText()
+    try {
+        return await (await element).getText()
+    } catch (error) {
+        throw new Error("Fail to get element text.");
+        
+    }
 }
 
 /**
- * method - verifyTitle()
- * 
  * It will verify the page title using chai assertion library.
- * params - Expected
- * return void
- * 
+ * @method verifyTitle()
+ * @param {string} expected Expected Title for verifying
+ * @returns {void} void
  */
-export const verifyTitle = async (expected: string) => {
+export const verifyTitle = async (expected: string): Promise<void> => {
     try {
         let actual: string = await browser.getTitle()
         addLog("Matching Title -  Actual - " + actual + " | Expected - " + expected)
         chaiExpect(actual).equal(expected)
     }
     catch (error) {
-
+        throw new Error("Fail to verify title.");
+        
     }
 
 }
+
 /**
- * method - verifyEquals()
- * 
  * It will verify the element text with the expected text using chai assertion library.
- * params - Actual, Expected, Description
- * return void
- * 
+ * @method verifyEquals()
+ * @param {string} actual Actual Value for verifying
+ * @param {string} expected Expected Value for verifying
+ * @param {string} description Value that we are verifying for. `Optional`
+ * @returns {void} void
  */
-export const verifyEquals = async (actual: any, expected: any, description: string) => {
+export const verifyEquals = async (actual: any, expected: any, description?: string): Promise<void> => {
     try {
-        let snap = await browser.takeScreenshot()
         addLog("Matching " + description + " - Actual - " + actual + " | Expected - " + expected)
         chaiExpect(actual).equal(expected)
     } catch (error) {
-        throw new Error("Fail to verify");
+        throw new Error("Fail to verify values.");
     }
 
 }
 
 /**
- * method - getAttributeValue()
- * 
  * It will return the attribute of given element.
- * params - String, Attribute
- * return String
- * 
+ * @method getAttributeValue()
+ * @param {Element} element On which action to be performed.
+ * @param {string} attribute element attribute for which the value get
+ * @returns {string} attribute value of given element
  */
 export const getAttributeValue = async (element: Promise<WebdriverIO.Element>, attribute: string): Promise<string> => {
-    return await (await element).getAttribute(attribute)
+    try {
+        return await (await element).getAttribute(attribute)
+    } catch (error) {
+        throw new Error("Fail to get the attribute value");
+    }
 }
 
 /**
- * method - verifyAttributeContains()
- * 
- * It will verify that element contains attribute using chai assertion.
- * params - String, Attribute, Value
- * return void
- * 
+ * It will verify the attribute value of given element using chai assertion.
+ * @method verifyAttributeContains()
+ * @param {Element} element On which action to be performed.
+ * @param {string} attribute element attribute for which the value get
+ * @param {string} value Expected attribute value of given element for verifying
+ * @returns {void} void
  */
-export const verifyAttributeContains = async (element: Promise<WebdriverIO.Element>, attribute: string, value: string) => {
+export const verifyAttributeContains = async (element: Promise<WebdriverIO.Element>, attribute: string, value: string): Promise<void> => {
     try {
         let actual: string = await getAttributeValue(element, attribute)
         addLog("Matching value of " + attribute + " - Actual - " + actual + " | Expected - " + value)
         chaiExpect(actual).to.have.string(value)
     } catch (error) {
-
+        throw new Error("Fail to verify the attribute value");
     }
 
 }
 
 /**
- * method - sizeOf()
- * 
  * It will return the size of the elements array
- * params - ElementArray
- * return number
- * 
+ * @method sizeOf()
+ * @param {Element} element On which action to be performed.
+ * @returns {number} the size of the elements array
  */
 export const sizeOf = async (element: Promise<WebdriverIO.ElementArray>): Promise<number> => {
-    return (await element).length
+    return (await element).length;
 }
 
-export const typeAndEnter = async (element: Promise<WebdriverIO.Element>, text: string, description: string) => {
+/**
+ * It will enter the value in text field and press `ENTER` key.
+ * @method typeAndEnter()
+ * @param {Element} element On which action to be performed.
+ * @param {string} text Value to be entered.
+ * @param {string} description Label for which value entered `Optional`.
+ * @returns {void} void
+ */
+export const typeAndEnter = async (element: Promise<WebdriverIO.Element>, text: string, description?: string): Promise<void> => {
     try {
-        await (await element).waitForDisplayed()
-        await (await element).setValue(text)
+        await typeText(element, text, description)
         browser.keys("Enter")
     } catch (error) {
-
+        throw new Error("Fail to type and enter");
+        
     }
 
 }
