@@ -249,22 +249,22 @@ export const typeAndEnter = async (element: Promise<WebdriverIO.Element>, text: 
 
 }
 
-export const implicitWait = async () => {
-    await browser.setTimeout({ 'implicit': 200000 })
-}
-
+/**
+ * It will wait until given element is displayed.
+ * @method waitForElement()
+ * @param {Element} element On which action to be performed.
+ * @returns {void} void
+ */
 export const waitForElement = async (element: Promise<WebdriverIO.Element>) => {
     await (await element).waitForDisplayed({ timeout: 30000 })
 }
 
 /**
-* method - rightClick()
-* 
-* It will perform double click action on element
-* params - Element
-* return void
-* 
-*/
+ * It will perform double click action on the given element.
+ * @method doubleClickOnElement()
+ * @param {Element} element On which action to be performed.
+ * @returns {void} void
+ */
 export const doubleClickOnElement = async (element: Promise<WebdriverIO.Element>) => {
     try {
         waitForElement(element)
@@ -277,13 +277,12 @@ export const doubleClickOnElement = async (element: Promise<WebdriverIO.Element>
 }
 
 /**
-* method - hoverAndClick()
-* 
-* It will first perform hover action then click action on element
-* params - Element
-* return void
-* 
-*/
+ * It will first hover on the given element and then perform click action on the given element.
+ * @method hoverAndClick()
+ * @param {Element} hoverElement On which hover action to be performed.
+ * @param {Element} clickElement On which click action to be performed.
+ * @returns {void} void
+ */
 export const hoverAndClick = async (hoverElement: Promise<WebdriverIO.Element>, clickElement: Promise<WebdriverIO.Element>) => {
     try {
         await (await hoverElement).moveTo();
@@ -294,18 +293,21 @@ export const hoverAndClick = async (hoverElement: Promise<WebdriverIO.Element>, 
 
 }
 
+/**
+ * It will refresh the opened page.
+ * @method refreshPage()
+ * @returns {void} void
+ */
 export const refreshPage = async () => {
     browser.refresh()
 }
 
 /**
-* method - scrollToAnElement()
-* 
-* It will perform scroll action until element is not present
-* params - Element
-* return void
-* 
-*/
+ * It will perform scroll action until given element is present.
+ * @method scrollToAnElement()
+ * @param {Element} element Scroll action to be performed till which element.
+ * @returns {void} void
+ */
 export const scrollToAnElement = async (element: Promise<WebdriverIO.Element>) => {
     try {
         await (await element).scrollIntoView();
@@ -316,15 +318,13 @@ export const scrollToAnElement = async (element: Promise<WebdriverIO.Element>) =
 
 }
 
-/**
-* method - isElementPresent()
-* 
-* It will check whether element is present or not
-* params - Element
-* return boolean
-* 
-*/
 
+/**
+ * It will check for presence of a given element.
+ * @method isElementPresent()
+ * @param {Element} element Whose presence is to be checked.
+ * @returns {boolean} boolean
+ */
 export const isElementPresent = async (element: Promise<WebdriverIO.Element>): Promise<boolean> => {
     try {
         waitForElement(element)
@@ -335,13 +335,11 @@ export const isElementPresent = async (element: Promise<WebdriverIO.Element>): P
 }
 
 /**
-* method - rightClick()
-* 
-* It will perform right/context click action on element
-* params - Element
-* return void
-* 
-*/
+ * It will perform right click action on given element.
+ * @method rightClick()
+ * @param {Element} element On which action to be performed.
+ * @returns {void} void
+ */
 export const rightClick = async (element: Promise<WebdriverIO.Element>): Promise<void> => {
     try {
         waitForElement(element);
@@ -353,13 +351,11 @@ export const rightClick = async (element: Promise<WebdriverIO.Element>): Promise
 }
 
 /**
-* method - waitUntilClickable()
-* 
-* It will wait until element is clickable timeout 5000ms
-* params - Element
-* return void
-* 
-*/
+ * It will wait for given element until it is clickable.
+ * @method waitUntilClickable()
+ * @param {Element} element Wait until clickable
+ * @returns {void} void
+ */
 export const waitUntilClickable = async (element: Promise<WebdriverIO.Element>): Promise<void> => {
     try {
         browser.waitUntil(async () => (await element).isClickable())
