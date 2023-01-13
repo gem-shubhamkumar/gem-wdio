@@ -249,10 +249,6 @@ export const typeAndEnter = async (element: Promise<WebdriverIO.Element>, text: 
 
 }
 
-export const implicitWait = async () => {
-    await browser.setTimeout({ 'implicit': 200000 })
-}
-
 export const waitForElement = async (element: Promise<WebdriverIO.Element>) => {
     await (await element).waitForDisplayed({ timeout: 30000 })
 }
@@ -267,11 +263,11 @@ export const waitForElement = async (element: Promise<WebdriverIO.Element>) => {
 */
 export const doubleClickOnElement = async (element: Promise<WebdriverIO.Element>) => {
     try {
-        waitForElement(element)
+        await waitForElement(element)
         await (await (element)).doubleClick()
 
     } catch (error) {
-        console.log("Error occured " + error)
+        throw new Error("Fail to double click on element");
     }
 
 }
@@ -369,3 +365,5 @@ export const waitUntilClickable = async (element: Promise<WebdriverIO.Element>):
     }
 
 }
+
+
